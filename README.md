@@ -59,7 +59,7 @@ Add the `metrics-cdi` library as a dependency:
 <dependency>
     <groupId>io.astefanutti.metrics.cdi</groupId>
     <artifactId>metrics-cdi</artifactId>
-    <version>1.6.0</version>
+    <version>1.6.1.Inventage</version>
 </dependency>
 ```
 
@@ -156,7 +156,7 @@ The `name` and `absolute` attributes available on every _Metrics_ annotation can
 ```java
 import com.codahale.metrics.Timer;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 class TimerBean {
 
@@ -170,7 +170,7 @@ class TimerBean {
 ```java
 import com.codahale.metrics.Timer;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 class TimerBean {
 
@@ -194,7 +194,7 @@ In order to provide metadata for the `Metric` instantiation and resolution, the 
 import com.codahale.metrics.Timer;
 import com.codahale.metrics.annotation.Metric;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 @Inject
 @Metric(name = "timerName", absolute = true)
@@ -207,7 +207,7 @@ or when using a [bean constructor][]:
 import com.codahale.metrics.Timer;
 import com.codahale.metrics.annotation.Metric;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 class TimerBean {
 
@@ -234,7 +234,7 @@ import com.codahale.metrics.Timer;
 import com.codahale.metrics.annotation.Metric;
 import com.codahale.metrics.annotation.Timed;
 
-import javax.enterprise.inject.Produces;
+import jakarta.enterprise.inject.Produces;
 
 class TimedMethodBean {
 
@@ -283,7 +283,7 @@ _Metrics CDI_ automatically registers a `MetricRegistry` bean into the CDI conta
 ```java
 import com.codahale.metrics.MetricRegistry;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 @Inject
 private MetricRegistry registry;
@@ -294,7 +294,7 @@ or by declaring a [bean constructor][]:
 ```java
 import com.codahale.metrics.MetricRegistry;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 class MetricRegistryBean {
 
@@ -312,8 +312,8 @@ Otherwise, _Metrics CDI_ uses any `MetricRegistry` bean declared in the CDI cont
 ```java
 import com.codahale.metrics.MetricRegistry;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Produces;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.inject.Produces;
 
 @Produces
 @ApplicationScoped
@@ -325,8 +325,8 @@ or with a [producer method][]:
 ```java
 import com.codahale.metrics.MetricRegistry;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Produces;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.inject.Produces;
 
 class MetricRegistryFactoryBean {
 
@@ -351,8 +351,8 @@ A `HealthCheck` bean can be declared as any CDI bean, e.g. with a [bean class][]
 ```java
 import com.codahale.metrics.health.HealthCheck;
 
-import javax.inject.Inject;
-import javax.inject.Named;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 
 @Named("databaseHealthCheck")
 class DatabaseHealthCheck extends HealthCheck {
@@ -376,7 +376,7 @@ _Metrics CDI_ fires a `MetricsConfiguration` event at deployment time that can b
 ```java
 import io.astefanutti.metrics.cdi.MetricsConfiguration;
 
-import javax.enterprise.event.Observes;
+import jakarta.enterprise.event.Observes;
 
 class MetricsCdiConfiguration {
 

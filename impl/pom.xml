@@ -5,7 +5,7 @@
     <parent>
         <groupId>io.astefanutti.metrics.cdi</groupId>
         <artifactId>metrics-cdi-parent</artifactId>
-        <version>1.7-SNAPSHOT</version>
+        <version>1.6.1.Inventage</version>
     </parent>
 
     <artifactId>metrics-cdi</artifactId>
@@ -57,13 +57,13 @@
         <!-- provided dependencies -->
 
         <dependency>
-            <groupId>javax.enterprise</groupId>
-            <artifactId>cdi-api</artifactId>
+            <groupId>jakarta.enterprise</groupId>
+            <artifactId>jakarta.enterprise.cdi-api</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>javax.annotation</groupId>
-            <artifactId>javax.annotation-api</artifactId>
+            <groupId>jakarta.annotation</groupId>
+            <artifactId>jakarta.annotation-api</artifactId>
         </dependency>
 
         <!-- test dependencies -->

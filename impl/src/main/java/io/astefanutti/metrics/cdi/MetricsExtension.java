@@ -18,34 +18,17 @@ package io.astefanutti.metrics.cdi;
 import com.codahale.metrics.Metric;
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.MetricSet;
-import com.codahale.metrics.annotation.CachedGauge;
-import com.codahale.metrics.annotation.Counted;
-import com.codahale.metrics.annotation.ExceptionMetered;
-import com.codahale.metrics.annotation.Gauge;
-import com.codahale.metrics.annotation.Metered;
-import com.codahale.metrics.annotation.Timed;
+import com.codahale.metrics.annotation.*;
+import jakarta.enterprise.event.Observes;
+import jakarta.enterprise.inject.Default;
+import jakarta.enterprise.inject.spi.*;
+import jakarta.enterprise.util.AnnotationLiteral;
 
-import javax.enterprise.event.Observes;
-import javax.enterprise.inject.Default;
-import javax.enterprise.inject.spi.AfterBeanDiscovery;
-import javax.enterprise.inject.spi.AfterDeploymentValidation;
-import javax.enterprise.inject.spi.AnnotatedMember;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.inject.spi.BeforeBeanDiscovery;
-import javax.enterprise.inject.spi.Extension;
-import javax.enterprise.inject.spi.ProcessAnnotatedType;
-import javax.enterprise.inject.spi.ProcessProducerField;
-import javax.enterprise.inject.spi.ProcessProducerMethod;
-import javax.enterprise.inject.spi.WithAnnotations;
-import javax.enterprise.util.AnnotationLiteral;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import static io.astefanutti.metrics.cdi.CdiHelper.declareAsInterceptorBinding;
-import static io.astefanutti.metrics.cdi.CdiHelper.getReference;
-import static io.astefanutti.metrics.cdi.CdiHelper.hasInjectionPoints;
+import static io.astefanutti.metrics.cdi.CdiHelper.*;
 
 public class MetricsExtension implements Extension {
 
@@ -90,7 +73,7 @@ public class MetricsExtension implements Extension {
 
     private void configuration(@Observes AfterDeploymentValidation adv, BeanManager manager) {
         // Fire configuration event
-        manager.fireEvent(configuration);
+        manager.getEvent().fire(configuration);
         configuration.unmodifiable();
 
         // Produce and register custom metrics

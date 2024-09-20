@@ -15,8 +15,8 @@
  */
 package io.astefanutti.metrics.cdi;
 
-import javax.enterprise.inject.spi.AnnotatedMember;
-import javax.enterprise.inject.spi.InjectionPoint;
+import jakarta.enterprise.inject.spi.AnnotatedMember;
+import jakarta.enterprise.inject.spi.InjectionPoint;
 
 /* package-private */ interface MetricName {
 

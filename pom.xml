@@ -10,7 +10,7 @@
 
     <groupId>io.astefanutti.metrics.cdi</groupId>
     <artifactId>metrics-cdi-parent</artifactId>
-    <version>1.7-SNAPSHOT</version>
+    <version>1.6.1.Inventage</version>
     <packaging>pom</packaging>
 
     <name>Metrics CDI</name>
@@ -58,17 +58,16 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <metrics.version>4.0.3</metrics.version>
-        <cdi.version>1.2</cdi.version>
+        <metrics.version>4.2.26</metrics.version>
+        <cdi.version>4.0.1</cdi.version>
         <cdi2.version>2.0</cdi2.version>
         <javaee7.version>7.0</javaee7.version>
-        <javaee8.version>8.0</javaee8.version>
-        <weld.version>2.4.3.Final</weld.version>
-        <weld3.version>3.0.3.Final</weld3.version>
+        <javaee8.version>8.0.0</javaee8.version>
+        <weld.version>5.1.2.Final</weld.version>
         <owb.version>1.7.3</owb.version>
         <wildfly-10.version>10.1.0.Final</wildfly-10.version>
         <jetty.version>9.4.44.v20210927</jetty.version>
-        <arquillian.version>1.1.13.Final</arquillian.version>
+        <arquillian.version>1.9.1.Final</arquillian.version>
         <shrinkwrap.resolver.version>2.2.6</shrinkwrap.resolver.version>
         <shrinkwrap.descriptors.version>2.0.0</shrinkwrap.descriptors.version>
         <log4j.version>2.17.0</log4j.version>
@@ -76,7 +75,7 @@
 
     <modules>
         <module>impl</module>
-        <module>envs</module>
+<!--        <module>envs</module>-->
     </modules>
 
     <build>
@@ -191,6 +190,20 @@
                     <compilerArgument>-parameters</compilerArgument>
                 </configuration>
             </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>3.3.1</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 
@@ -231,16 +244,30 @@
             <!-- provided dependencies -->
 
             <dependency>
-                <groupId>javax.enterprise</groupId>
-                <artifactId>cdi-api</artifactId>
+                <groupId>jakarta.enterprise</groupId>
+                <artifactId>jakarta.enterprise.cdi-api</artifactId>
                 <version>${cdi.version}</version>
                 <scope>provided</scope>
             </dependency>
 
             <dependency>
-                <groupId>javax.annotation</groupId>
-                <artifactId>javax.annotation-api</artifactId>
-                <version>1.2</version>
+                <groupId>jakarta.annotation</groupId>
+                <artifactId>jakarta.annotation-api</artifactId>
+                <version>2.1.1</version>
+                <scope>provided</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>jakarta.ejb</groupId>
+                <artifactId>jakarta.ejb-api</artifactId>
+                <version>4.0.1</version>
+                <scope>provided</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>jakarta.inject</groupId>
+                <artifactId>jakarta.inject-api</artifactId>
+                <version>2.0.1</version>
                 <scope>provided</scope>
             </dependency>
 
@@ -369,7 +396,7 @@
 
             <dependency>
                 <groupId>org.jboss.weld.servlet</groupId>
-                <artifactId>weld-servlet</artifactId>
+                <artifactId>weld-servlet-core</artifactId>
                 <version>${weld.version}</version>
                 <scope>test</scope>
             </dependency>

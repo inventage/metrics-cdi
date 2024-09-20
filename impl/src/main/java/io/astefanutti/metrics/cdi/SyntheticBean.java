@@ -15,17 +15,17 @@
  */
 package io.astefanutti.metrics.cdi;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.Any;
-import javax.enterprise.inject.Default;
-import javax.enterprise.inject.spi.AnnotatedType;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.inject.spi.InjectionPoint;
-import javax.enterprise.inject.spi.InjectionTarget;
-import javax.enterprise.inject.spi.PassivationCapable;
-import javax.enterprise.util.AnnotationLiteral;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.spi.CreationalContext;
+import jakarta.enterprise.inject.Any;
+import jakarta.enterprise.inject.Default;
+import jakarta.enterprise.inject.spi.AnnotatedType;
+import jakarta.enterprise.inject.spi.Bean;
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.enterprise.inject.spi.InjectionPoint;
+import jakarta.enterprise.inject.spi.InjectionTarget;
+import jakarta.enterprise.inject.spi.PassivationCapable;
+import jakarta.enterprise.util.AnnotationLiteral;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Arrays;
@@ -53,7 +53,7 @@ import java.util.Set;
         this.name = name;
         this.description = description;
         this.types = annotatedType.getTypeClosure();
-        this.target = manager.createInjectionTarget(annotatedType);
+        this.target = manager.getInjectionTargetFactory(annotatedType).createInjectionTarget(null);
     }
 
     @Override
@@ -114,11 +114,6 @@ import java.util.Set;
 
     @Override
     public boolean isAlternative() {
-        return false;
-    }
-
-    @Override
-    public boolean isNullable() {
         return false;
     }
 

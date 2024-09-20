@@ -15,7 +15,8 @@
  */
 package io.astefanutti.metrics.cdi;
 
-import javax.enterprise.inject.spi.Annotated;
+import jakarta.enterprise.inject.spi.Annotated;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Collections;
@@ -53,6 +54,17 @@ import java.util.Set;
     }
 
     @Override
+    public <T extends Annotation> Set<T> getAnnotations(Class<T> annotationType) {
+        Set<T> annotation = getDecoratingAnnotations(annotationType);
+        if (!annotation.isEmpty()) {
+            return annotation;
+        }
+        else {
+            return decorated.getAnnotations(annotationType);
+        }
+    }
+
+    @Override
     public Set<Annotation> getAnnotations() {
         Set<Annotation> annotations = new HashSet<>(this.annotations);
         annotations.addAll(decorated.getAnnotations());
@@ -71,5 +83,16 @@ import java.util.Set;
                 return (T) annotation;
 
         return null;
+    }
+
+    private <T extends Annotation> Set<T> getDecoratingAnnotations(Class<T> annotationType) {
+        Set<T> result = new HashSet<>();
+        for (Annotation annotation : annotations) {
+            if (annotationType.isAssignableFrom(annotation.annotationType())) {
+                result.add((T) annotation);
+            }
+        }
+
+        return result;
     }
 }

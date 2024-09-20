@@ -18,11 +18,11 @@ package io.astefanutti.metrics.cdi;
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.annotation.Metric;
 
-import javax.enterprise.inject.Vetoed;
-import javax.enterprise.inject.spi.Annotated;
-import javax.enterprise.inject.spi.AnnotatedMember;
-import javax.enterprise.inject.spi.AnnotatedParameter;
-import javax.enterprise.inject.spi.InjectionPoint;
+import jakarta.enterprise.inject.Vetoed;
+import jakarta.enterprise.inject.spi.Annotated;
+import jakarta.enterprise.inject.spi.AnnotatedMember;
+import jakarta.enterprise.inject.spi.AnnotatedParameter;
+import jakarta.enterprise.inject.spi.InjectionPoint;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 

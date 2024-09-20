@@ -25,12 +25,12 @@ import com.codahale.metrics.Reservoir;
 import com.codahale.metrics.Timer;
 import java.util.Optional;
 import java.util.function.BiFunction;
-import javax.annotation.Priority;
-import javax.enterprise.context.Dependent;
-import javax.enterprise.inject.Alternative;
-import javax.enterprise.inject.Produces;
-import javax.enterprise.inject.spi.InjectionPoint;
-import javax.interceptor.Interceptor;
+import jakarta.annotation.Priority;
+import jakarta.enterprise.context.Dependent;
+import jakarta.enterprise.inject.Alternative;
+import jakarta.enterprise.inject.Produces;
+import jakarta.enterprise.inject.spi.InjectionPoint;
+import jakarta.interceptor.Interceptor;
 
 import static io.astefanutti.metrics.cdi.MetricsParameter.ReservoirFunction;
 
