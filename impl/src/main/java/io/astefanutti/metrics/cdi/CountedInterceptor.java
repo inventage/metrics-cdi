@@ -15,20 +15,20 @@
  */
 package io.astefanutti.metrics.cdi;
 
-import com.codahale.metrics.Counter;
-import com.codahale.metrics.MetricRegistry;
-import com.codahale.metrics.annotation.Counted;
-
+import io.dropwizard.metrics5.Counter;
+import io.dropwizard.metrics5.MetricRegistry;
+import io.dropwizard.metrics5.annotation.Counted;
 import jakarta.annotation.Priority;
 import jakarta.enterprise.inject.Intercepted;
 import jakarta.enterprise.inject.spi.Bean;
 import jakarta.inject.Inject;
 import jakarta.interceptor.AroundConstruct;
 import jakarta.interceptor.AroundInvoke;
+import jakarta.interceptor.AroundTimeout;
 import jakarta.interceptor.Interceptor;
 import jakarta.interceptor.InvocationContext;
+
 import java.lang.reflect.Executable;
-import jakarta.interceptor.AroundTimeout;
 
 @Counted
 @Interceptor

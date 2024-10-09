@@ -15,8 +15,9 @@
  */
 package io.astefanutti.metrics.cdi;
 
-import com.codahale.metrics.Metric;
-import com.codahale.metrics.Reservoir;
+import io.dropwizard.metrics5.Metric;
+import io.dropwizard.metrics5.Reservoir;
+
 import java.util.Collections;
 import java.util.EnumMap;
 import java.util.Map;

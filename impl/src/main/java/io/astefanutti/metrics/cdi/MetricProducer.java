@@ -15,22 +15,24 @@
  */
 package io.astefanutti.metrics.cdi;
 
-import com.codahale.metrics.Counter;
-import com.codahale.metrics.Gauge;
-import com.codahale.metrics.Histogram;
-import com.codahale.metrics.Meter;
-import com.codahale.metrics.Metric;
-import com.codahale.metrics.MetricRegistry;
-import com.codahale.metrics.Reservoir;
-import com.codahale.metrics.Timer;
-import java.util.Optional;
-import java.util.function.BiFunction;
+import io.dropwizard.metrics5.Counter;
+import io.dropwizard.metrics5.Gauge;
+import io.dropwizard.metrics5.Histogram;
+import io.dropwizard.metrics5.Meter;
+import io.dropwizard.metrics5.Metric;
+import io.dropwizard.metrics5.MetricName;
+import io.dropwizard.metrics5.MetricRegistry;
+import io.dropwizard.metrics5.Reservoir;
+import io.dropwizard.metrics5.Timer;
 import jakarta.annotation.Priority;
 import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.inject.Alternative;
 import jakarta.enterprise.inject.Produces;
 import jakarta.enterprise.inject.spi.InjectionPoint;
 import jakarta.interceptor.Interceptor;
+
+import java.util.Optional;
+import java.util.function.BiFunction;
 
 import static io.astefanutti.metrics.cdi.MetricsParameter.ReservoirFunction;
 
@@ -40,39 +42,39 @@ import static io.astefanutti.metrics.cdi.MetricsParameter.ReservoirFunction;
 /* package-private */ final class MetricProducer {
 
     @Produces
-    private static Counter counter(InjectionPoint ip, MetricRegistry registry, MetricName metricName) {
-        return registry.counter(metricName.of(ip));
+    private static Counter counter(InjectionPoint ip, MetricRegistry registry, MetricNameCdi metricNameCdi) {
+        return registry.counter(metricNameCdi.of(ip));
     }
 
     @Produces
-    private static <T> Gauge<T> gauge(final InjectionPoint ip, final MetricRegistry registry, final MetricName metricName) {
+    private static <T> Gauge<T> gauge(final InjectionPoint ip, final MetricRegistry registry, final MetricNameCdi metricNameCdi) {
         // A forwarding Gauge must be returned as the Gauge creation happens when the declaring bean gets instantiated and the corresponding Gauge can be injected before which leads to producing a null value
         return () -> {
             @SuppressWarnings("unchecked")
-            Gauge<T> gauge = registry.getGauges().get(metricName.of(ip));
+            Gauge<T> gauge = (Gauge<T>) registry.getGauges().get(metricNameCdi.of(ip));
             // TODO: better error report when the gauge doesn't exist
             return gauge.getValue();
         };
     };
 
     @Produces
-    private static Histogram histogram(InjectionPoint ip, MetricRegistry registry, MetricName metricName, MetricsExtension extension) {
-        String name = metricName.of(ip);
-        return extension.<BiFunction<String, Class<? extends Metric>, Optional<Reservoir>>>getParameter(ReservoirFunction)
+    private static Histogram histogram(InjectionPoint ip, MetricRegistry registry, MetricNameCdi metricNameCdi, MetricsExtension extension) {
+        MetricName name = metricNameCdi.of(ip);
+        return extension.<BiFunction<MetricName, Class<? extends Metric>, Optional<Reservoir>>>getParameter(ReservoirFunction)
             .flatMap(function -> function.apply(name, Histogram.class))
             .map(reservoir -> registry.histogram(name, () -> new Histogram(reservoir)))
             .orElseGet(() -> registry.histogram(name));
     }
 
     @Produces
-    private static Meter meter(InjectionPoint ip, MetricRegistry registry, MetricName metricName) {
-        return registry.meter(metricName.of(ip));
+    private static Meter meter(InjectionPoint ip, MetricRegistry registry, MetricNameCdi metricNameCdi) {
+        return registry.meter(metricNameCdi.of(ip));
     }
 
     @Produces
-    private static Timer timer(InjectionPoint ip, MetricRegistry registry, MetricName metricName, MetricsExtension extension) {
-        String name = metricName.of(ip);
-        return extension.<BiFunction<String, Class<? extends Metric>, Optional<Reservoir>>>getParameter(ReservoirFunction)
+    private static Timer timer(InjectionPoint ip, MetricRegistry registry, MetricNameCdi metricNameCdi, MetricsExtension extension) {
+        MetricName name = metricNameCdi.of(ip);
+        return extension.<BiFunction<MetricName, Class<? extends Metric>, Optional<Reservoir>>>getParameter(ReservoirFunction)
             .flatMap(function -> function.apply(name, Timer.class))
             .map(reservoir -> registry.timer(name, () -> new Timer(reservoir)))
             .orElseGet(() -> registry.timer(name));

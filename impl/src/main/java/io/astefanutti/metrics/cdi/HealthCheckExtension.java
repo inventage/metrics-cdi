@@ -15,9 +15,8 @@
  */
 package io.astefanutti.metrics.cdi;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import io.dropwizard.metrics5.health.HealthCheck;
+import io.dropwizard.metrics5.health.HealthCheckRegistry;
 import jakarta.enterprise.event.Observes;
 import jakarta.enterprise.inject.spi.AfterBeanDiscovery;
 import jakarta.enterprise.inject.spi.AfterDeploymentValidation;
@@ -28,8 +27,8 @@ import jakarta.enterprise.inject.spi.Extension;
 import jakarta.enterprise.inject.spi.ProcessProducerField;
 import jakarta.enterprise.inject.spi.ProcessProducerMethod;
 
-import com.codahale.metrics.health.HealthCheck;
-import com.codahale.metrics.health.HealthCheckRegistry;
+import java.util.HashMap;
+import java.util.Map;
 
 import static io.astefanutti.metrics.cdi.CdiHelper.getReference;
 import static io.astefanutti.metrics.cdi.CdiHelper.hasInjectionPoints;

@@ -15,8 +15,9 @@
  */
 package io.astefanutti.metrics.cdi;
 
-import com.codahale.metrics.Metric;
-import com.codahale.metrics.Reservoir;
+import io.dropwizard.metrics5.Metric;
+import io.dropwizard.metrics5.Reservoir;
+
 import java.util.Optional;
 import java.util.function.BiFunction;
 
@@ -38,9 +39,9 @@ public interface MetricsConfiguration {
     MetricsConfiguration useAbsoluteName(boolean useAbsoluteName);
 
     /**
-     * Registers a function that supplies a {@link com.codahale.metrics.Reservoir} instance depending on the metric.
+     * Registers a function that supplies a {@link io.dropwizard.metrics5.Reservoir} instance depending on the metric.
      *
-     * @param function the {@code BiFunction} that supplies the {@link com.codahale.metrics.Reservoir} instances
+     * @param function the {@code BiFunction} that supplies the {@link io.dropwizard.metrics5.Reservoir} instances
      * @return this Metrics CDI configuration
      * @throws IllegalStateException if called outside of the observer method invocation
      * @since 1.5.0

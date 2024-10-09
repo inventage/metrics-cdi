@@ -15,14 +15,19 @@
  */
 package io.astefanutti.metrics.cdi;
 
-import com.codahale.metrics.MetricRegistry;
-import com.codahale.metrics.Timer;
-import com.codahale.metrics.annotation.Timed;
+import io.dropwizard.metrics5.MetricName;
+import io.dropwizard.metrics5.MetricRegistry;
+import io.dropwizard.metrics5.Timer;
+import io.dropwizard.metrics5.annotation.Timed;
 import jakarta.annotation.Priority;
 import jakarta.enterprise.inject.Intercepted;
 import jakarta.enterprise.inject.spi.Bean;
 import jakarta.inject.Inject;
-import jakarta.interceptor.*;
+import jakarta.interceptor.AroundConstruct;
+import jakarta.interceptor.AroundInvoke;
+import jakarta.interceptor.AroundTimeout;
+import jakarta.interceptor.Interceptor;
+import jakarta.interceptor.InvocationContext;
 
 import java.lang.reflect.Executable;
 
@@ -60,10 +65,10 @@ import java.lang.reflect.Executable;
     }
 
     private Object timedCallable(InvocationContext context, Executable executable) throws Exception {
-        String name = resolver.timed(bean.getBeanClass(), executable).metricName();
+        MetricName name = resolver.timed(bean.getBeanClass(), executable).metricName();
         Timer timer = (Timer) registry.getMetrics().get(name);
         if (timer == null)
-            throw new IllegalStateException("No timer with name [" + name + "] found in registry [" + registry + "]");
+            throw new IllegalStateException("No timer with name [" + name.getKey() + "] found in registry [" + registry + "]");
 
         Timer.Context time = timer.time();
         try {

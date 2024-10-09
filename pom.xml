@@ -10,7 +10,7 @@
 
     <groupId>io.astefanutti.metrics.cdi</groupId>
     <artifactId>metrics-cdi-parent</artifactId>
-    <version>1.6.1.Inventage</version>
+    <version>1.6.2.Inventage</version>
     <packaging>pom</packaging>
 
     <name>Metrics CDI</name>
@@ -58,7 +58,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <metrics.version>4.2.26</metrics.version>
+        <metrics.version>5.0.0-rc22</metrics.version>
         <cdi.version>4.0.1</cdi.version>
         <cdi2.version>2.0</cdi2.version>
         <javaee7.version>7.0</javaee7.version>
@@ -213,13 +213,13 @@
             <!-- compile dependencies -->
 
             <dependency>
-                <groupId>io.dropwizard.metrics</groupId>
+                <groupId>io.dropwizard.metrics5</groupId>
                 <artifactId>metrics-core</artifactId>
                 <version>${metrics.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>io.dropwizard.metrics</groupId>
+                <groupId>io.dropwizard.metrics5</groupId>
                 <artifactId>metrics-annotation</artifactId>
                 <version>${metrics.version}</version>
                 <exclusions>
@@ -230,7 +230,7 @@
                 </exclusions>
             </dependency>
             <dependency>
-                <groupId>io.dropwizard.metrics</groupId>
+                <groupId>io.dropwizard.metrics5</groupId>
                 <artifactId>metrics-healthchecks</artifactId>
                 <version>${metrics.version}</version>
                 <exclusions>

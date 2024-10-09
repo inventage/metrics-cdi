@@ -26,7 +26,7 @@ import jakarta.enterprise.inject.spi.BeanManager;
 
     @Produces
     // TODO: should be declared @ApplicationScoped when WELD-2083 is fixed
-    private MetricName metricName(BeanManager manager) {
+    private MetricNameCdi metricName(BeanManager manager) {
         try {
             // Cannot be inlined as OWB throws a NPE when manager.getELResolver() gets called
             ExpressionFactory factory = ExpressionFactory.newInstance();

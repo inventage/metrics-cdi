@@ -15,20 +15,37 @@
  */
 package io.astefanutti.metrics.cdi;
 
-import com.codahale.metrics.Metric;
-import com.codahale.metrics.MetricRegistry;
-import com.codahale.metrics.MetricSet;
-import com.codahale.metrics.annotation.*;
+import io.dropwizard.metrics5.Metric;
+import io.dropwizard.metrics5.MetricRegistry;
+import io.dropwizard.metrics5.MetricSet;
+import io.dropwizard.metrics5.annotation.CachedGauge;
+import io.dropwizard.metrics5.annotation.Counted;
+import io.dropwizard.metrics5.annotation.ExceptionMetered;
+import io.dropwizard.metrics5.annotation.Gauge;
+import io.dropwizard.metrics5.annotation.Metered;
+import io.dropwizard.metrics5.annotation.Timed;
 import jakarta.enterprise.event.Observes;
 import jakarta.enterprise.inject.Default;
-import jakarta.enterprise.inject.spi.*;
+import jakarta.enterprise.inject.spi.AfterBeanDiscovery;
+import jakarta.enterprise.inject.spi.AfterDeploymentValidation;
+import jakarta.enterprise.inject.spi.AnnotatedMember;
+import jakarta.enterprise.inject.spi.Bean;
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.enterprise.inject.spi.BeforeBeanDiscovery;
+import jakarta.enterprise.inject.spi.Extension;
+import jakarta.enterprise.inject.spi.ProcessAnnotatedType;
+import jakarta.enterprise.inject.spi.ProcessProducerField;
+import jakarta.enterprise.inject.spi.ProcessProducerMethod;
+import jakarta.enterprise.inject.spi.WithAnnotations;
 import jakarta.enterprise.util.AnnotationLiteral;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import static io.astefanutti.metrics.cdi.CdiHelper.*;
+import static io.astefanutti.metrics.cdi.CdiHelper.declareAsInterceptorBinding;
+import static io.astefanutti.metrics.cdi.CdiHelper.getReference;
+import static io.astefanutti.metrics.cdi.CdiHelper.hasInjectionPoints;
 
 public class MetricsExtension implements Extension {
 
@@ -78,7 +95,7 @@ public class MetricsExtension implements Extension {
 
         // Produce and register custom metrics
         MetricRegistry registry = getReference(manager, MetricRegistry.class);
-        MetricName metricName = getReference(manager, MetricName.class);
+        MetricNameCdi metricNameCdi = getReference(manager, MetricNameCdi.class);
         for (Map.Entry<Bean<?>, AnnotatedMember<?>> bean : metrics.entrySet()) {
             // TODO: add MetricSet metrics into the metric registry
             if (bean.getKey().getTypes().contains(MetricSet.class)
@@ -87,7 +104,7 @@ public class MetricsExtension implements Extension {
                 // skip producer methods with injection point
                 || hasInjectionPoints(bean.getValue()))
                 continue;
-            registry.register(metricName.of(bean.getValue()), (Metric) getReference(manager, bean.getValue().getBaseType(), bean.getKey()));
+            registry.register(metricNameCdi.of(bean.getValue()), (Metric) getReference(manager, bean.getValue().getBaseType(), bean.getKey()));
         }
 
         // Let's clear the collected metric producers

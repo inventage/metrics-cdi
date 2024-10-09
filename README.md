@@ -59,7 +59,7 @@ Add the `metrics-cdi` library as a dependency:
 <dependency>
     <groupId>io.astefanutti.metrics.cdi</groupId>
     <artifactId>metrics-cdi</artifactId>
-    <version>1.6.1.Inventage</version>
+    <version>1.6.2.Inventage</version>
 </dependency>
 ```
 
@@ -105,7 +105,7 @@ _Metrics_ comes with the [`metrics-annotation`][] module that contains a set of 
 For example, a method of a bean can be annotated so that its execution can be monitored using _Metrics_:
 
 ```java
-import com.codahale.metrics.annotation.Timed;
+import io.dropwizard.metrics5.annotation.Timed;
 
 class TimedMethodBean {
 
@@ -119,7 +119,7 @@ class TimedMethodBean {
 or the [bean class][] can be annotated directly so that all its public methods get monitored:
 
 ```java
-import com.codahale.metrics.annotation.Metered;
+import io.dropwizard.metrics5.annotation.Metered;
 
 @Metered
 public class MeteredClassBean {
@@ -133,7 +133,7 @@ public class MeteredClassBean {
 or the [bean constructor][] can be annotated so that its instantiations get monitored:
 
 ```java
-import com.codahale.metrics.annotation.Counted;
+import io.dropwizard.metrics5.annotation.Counted;
 
 class CountedConstructorBean {
 
@@ -154,7 +154,7 @@ The `name` and `absolute` attributes available on every _Metrics_ annotation can
 `Metric` instances can be retrieved from the _Metrics_ registry by declaring an [injected field][], e.g.:
 
 ```java
-import com.codahale.metrics.Timer;
+import io.dropwizard.metrics5.Timer;
 
 import jakarta.inject.Inject;
 
@@ -168,7 +168,7 @@ class TimerBean {
 `Metric` instances can be injected similarly as parameters of any [initializer method][] or [bean constructor][], e.g.:
 
 ```java
-import com.codahale.metrics.Timer;
+import io.dropwizard.metrics5.Timer;
 
 import jakarta.inject.Inject;
 
@@ -191,8 +191,8 @@ In the above example, the `-parameters` compiler option is required to get acces
 In order to provide metadata for the `Metric` instantiation and resolution, the injection point can be annotated with the `@Metric` annotation, e.g., with an [injected field][]:
 
 ```java
-import com.codahale.metrics.Timer;
-import com.codahale.metrics.annotation.Metric;
+import io.dropwizard.metrics5.Timer;
+import io.dropwizard.metrics5.annotation.Metric;
 
 import jakarta.inject.Inject;
 
@@ -204,8 +204,8 @@ private Timer timer; // Timer name => timerName
 or when using a [bean constructor][]:
 
 ```java
-import com.codahale.metrics.Timer;
-import com.codahale.metrics.annotation.Metric;
+import io.dropwizard.metrics5.Timer;
+import io.dropwizard.metrics5.annotation.Metric;
 
 import jakarta.inject.Inject;
 
@@ -229,10 +229,10 @@ class TimerBean {
 While _Metrics CDI_ automatically registers `Metric` instances during the [_Metrics_ AOP instrumentation](#metrics-aop-instrumentation), it may be necessary for an application to explicitly provide the `Metric` instances to register. For example, to provide particular `Reservoir` implementations to [histograms][] or [timers][], e.g. with a [producer field][]:
 
 ```java
-import com.codahale.metrics.SlidingTimeWindowReservoir;
-import com.codahale.metrics.Timer;
-import com.codahale.metrics.annotation.Metric;
-import com.codahale.metrics.annotation.Timed;
+import io.dropwizard.metrics5.SlidingTimeWindowReservoir;
+import io.dropwizard.metrics5.Timer;
+import io.dropwizard.metrics5.annotation.Metric;
+import io.dropwizard.metrics5.annotation.Timed;
 
 import jakarta.enterprise.inject.Produces;
 
@@ -281,7 +281,7 @@ class CacheHitRatioBean {
 _Metrics CDI_ automatically registers a `MetricRegistry` bean into the CDI container to register any `Metric` instances produced. That _default_ `MetricRegistry` bean can be injected using standard CDI [typesafe resolution][], for example, by declaring an [injected field][]:
 
 ```java
-import com.codahale.metrics.MetricRegistry;
+import io.dropwizard.metrics5.MetricRegistry;
 
 import jakarta.inject.Inject;
 
@@ -292,7 +292,7 @@ private MetricRegistry registry;
 or by declaring a [bean constructor][]:
 
 ```java
-import com.codahale.metrics.MetricRegistry;
+import io.dropwizard.metrics5.MetricRegistry;
 
 import jakarta.inject.Inject;
 
@@ -310,7 +310,7 @@ class MetricRegistryBean {
 Otherwise, _Metrics CDI_ uses any `MetricRegistry` bean declared in the CDI container with the [built-in _default_ qualifier][] `@Default` so that a _custom_ `MetricRegistry` can be provided. For example, that _custom_ `MetricRegistry` can be declared with a [producer field][]:
 
 ```java
-import com.codahale.metrics.MetricRegistry;
+import io.dropwizard.metrics5.MetricRegistry;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Produces;
@@ -323,7 +323,7 @@ private final MetricRegistry registry = new MetricRegistry();
 or with a [producer method][]:
 
 ```java
-import com.codahale.metrics.MetricRegistry;
+import io.dropwizard.metrics5.MetricRegistry;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Produces;
@@ -349,7 +349,7 @@ _Metrics CDI_ then automatically registers any `HealthCheck` instance with the c
 A `HealthCheck` bean can be declared as any CDI bean, e.g. with a [bean class][]:
 
 ```java
-import com.codahale.metrics.health.HealthCheck;
+import io.dropwizard.metrics5.health.HealthCheck;
 
 import jakarta.inject.Inject;
 import jakarta.inject.Named;

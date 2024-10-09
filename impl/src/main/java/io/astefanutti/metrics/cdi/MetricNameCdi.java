@@ -15,14 +15,15 @@
  */
 package io.astefanutti.metrics.cdi;
 
+import io.dropwizard.metrics5.MetricName;
 import jakarta.enterprise.inject.spi.AnnotatedMember;
 import jakarta.enterprise.inject.spi.InjectionPoint;
 
-/* package-private */ interface MetricName {
+/* package-private */ interface MetricNameCdi {
 
-    String of(InjectionPoint point);
+    MetricName of(InjectionPoint point);
 
-    String of(AnnotatedMember<?> member);
+    MetricName of(AnnotatedMember<?> member);
 
     // TODO: expose an SPI so that external strategies can be provided. For example, Camel CDI could provide a property placeholder resolution strategy.
     String of(String attribute);

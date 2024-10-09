@@ -15,10 +15,9 @@
  */
 package io.astefanutti.metrics.cdi;
 
-import com.codahale.metrics.Meter;
-import com.codahale.metrics.MetricRegistry;
-import com.codahale.metrics.annotation.ExceptionMetered;
-
+import io.dropwizard.metrics5.Meter;
+import io.dropwizard.metrics5.MetricRegistry;
+import io.dropwizard.metrics5.annotation.ExceptionMetered;
 import jakarta.annotation.Priority;
 import jakarta.enterprise.inject.Intercepted;
 import jakarta.enterprise.inject.spi.Bean;
@@ -27,6 +26,7 @@ import jakarta.interceptor.AroundConstruct;
 import jakarta.interceptor.AroundInvoke;
 import jakarta.interceptor.Interceptor;
 import jakarta.interceptor.InvocationContext;
+
 import java.lang.reflect.Executable;
 
 @Interceptor

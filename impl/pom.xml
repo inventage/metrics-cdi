@@ -5,7 +5,7 @@
     <parent>
         <groupId>io.astefanutti.metrics.cdi</groupId>
         <artifactId>metrics-cdi-parent</artifactId>
-        <version>1.6.1.Inventage</version>
+        <version>1.6.2.Inventage</version>
     </parent>
 
     <artifactId>metrics-cdi</artifactId>
@@ -39,17 +39,17 @@
         <!-- compile dependencies -->
 
         <dependency>
-            <groupId>io.dropwizard.metrics</groupId>
+            <groupId>io.dropwizard.metrics5</groupId>
             <artifactId>metrics-core</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>io.dropwizard.metrics</groupId>
+            <groupId>io.dropwizard.metrics5</groupId>
             <artifactId>metrics-annotation</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>io.dropwizard.metrics</groupId>
+            <groupId>io.dropwizard.metrics5</groupId>
             <artifactId>metrics-healthchecks</artifactId>
             <optional>true</optional>
         </dependency>

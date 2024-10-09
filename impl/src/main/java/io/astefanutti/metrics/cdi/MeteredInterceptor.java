@@ -15,20 +15,21 @@
  */
 package io.astefanutti.metrics.cdi;
 
-import com.codahale.metrics.Meter;
-import com.codahale.metrics.MetricRegistry;
-import com.codahale.metrics.annotation.Metered;
-
+import io.dropwizard.metrics5.Meter;
+import io.dropwizard.metrics5.MetricName;
+import io.dropwizard.metrics5.MetricRegistry;
+import io.dropwizard.metrics5.annotation.Metered;
 import jakarta.annotation.Priority;
 import jakarta.enterprise.inject.Intercepted;
 import jakarta.enterprise.inject.spi.Bean;
 import jakarta.inject.Inject;
 import jakarta.interceptor.AroundConstruct;
 import jakarta.interceptor.AroundInvoke;
+import jakarta.interceptor.AroundTimeout;
 import jakarta.interceptor.Interceptor;
 import jakarta.interceptor.InvocationContext;
+
 import java.lang.reflect.Executable;
-import jakarta.interceptor.AroundTimeout;
 
 @Metered
 @Interceptor
@@ -64,7 +65,7 @@ import jakarta.interceptor.AroundTimeout;
     }
 
     private Object meteredCallable(InvocationContext context, Executable executable) throws Exception {
-        String name = resolver.metered(bean.getBeanClass(), executable).metricName();
+        MetricName name = resolver.metered(bean.getBeanClass(), executable).metricName();
         Meter meter = (Meter) registry.getMetrics().get(name);
         if (meter == null)
             throw new IllegalStateException("No meter with name [" + name + "] found in registry [" + registry + "]");

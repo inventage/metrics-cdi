@@ -15,22 +15,23 @@
  */
 package io.astefanutti.metrics.cdi;
 
-import com.codahale.metrics.Metric;
-import com.codahale.metrics.MetricRegistry;
-import com.codahale.metrics.Reservoir;
-import com.codahale.metrics.Timer;
-import com.codahale.metrics.annotation.CachedGauge;
-import com.codahale.metrics.annotation.Counted;
-import com.codahale.metrics.annotation.ExceptionMetered;
-import com.codahale.metrics.annotation.Gauge;
-import com.codahale.metrics.annotation.Metered;
-import com.codahale.metrics.annotation.Timed;
-
+import io.dropwizard.metrics5.Metric;
+import io.dropwizard.metrics5.MetricName;
+import io.dropwizard.metrics5.MetricRegistry;
+import io.dropwizard.metrics5.Reservoir;
+import io.dropwizard.metrics5.Timer;
+import io.dropwizard.metrics5.annotation.CachedGauge;
+import io.dropwizard.metrics5.annotation.Counted;
+import io.dropwizard.metrics5.annotation.ExceptionMetered;
+import io.dropwizard.metrics5.annotation.Gauge;
+import io.dropwizard.metrics5.annotation.Metered;
+import io.dropwizard.metrics5.annotation.Timed;
 import jakarta.annotation.Priority;
 import jakarta.inject.Inject;
 import jakarta.interceptor.AroundConstruct;
 import jakarta.interceptor.Interceptor;
 import jakarta.interceptor.InvocationContext;
+
 import java.lang.reflect.Executable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -113,18 +114,18 @@ import static io.astefanutti.metrics.cdi.MetricsParameter.ReservoirFunction;
 
         MetricResolver.Of<Timed> timed = resolver.timed(bean, executable);
         if (timed.isPresent()) {
-            extension.<BiFunction<String, Class<? extends Metric>, Optional<Reservoir>>>getParameter(ReservoirFunction)
+            extension.<BiFunction<MetricName, Class<? extends Metric>, Optional<Reservoir>>>getParameter(ReservoirFunction)
                 .flatMap(function -> function.apply(timed.metricName(), Timer.class))
                 .map(reservoir -> registry.timer(timed.metricName(), () -> new Timer(reservoir)))
                 .orElseGet(() -> registry.timer(timed.metricName()));
         }
     }
 
-    private static final class CachingGauge extends com.codahale.metrics.CachedGauge<Object> {
+    private static final class CachingGauge extends io.dropwizard.metrics5.CachedGauge<Object> {
 
-        private final com.codahale.metrics.Gauge<?> gauge;
+        private final io.dropwizard.metrics5.Gauge<?> gauge;
         
-        private CachingGauge(com.codahale.metrics.Gauge<?> gauge, long timeout, TimeUnit timeoutUnit) {
+        private CachingGauge(io.dropwizard.metrics5.Gauge<?> gauge, long timeout, TimeUnit timeoutUnit) {
             super(timeout, timeoutUnit);
             this.gauge = gauge;
         }
@@ -135,7 +136,7 @@ import static io.astefanutti.metrics.cdi.MetricsParameter.ReservoirFunction;
         }
     }
 
-    private static final class ForwardingGauge implements com.codahale.metrics.Gauge<Object> {
+    private static final class ForwardingGauge implements io.dropwizard.metrics5.Gauge<Object> {
 
         private final Method method;
 

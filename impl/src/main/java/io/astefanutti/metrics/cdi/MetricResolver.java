@@ -15,24 +15,25 @@
  */
 package io.astefanutti.metrics.cdi;
 
-import com.codahale.metrics.MetricRegistry;
-import com.codahale.metrics.annotation.CachedGauge;
-import com.codahale.metrics.annotation.Counted;
-import com.codahale.metrics.annotation.ExceptionMetered;
-import com.codahale.metrics.annotation.Gauge;
-import com.codahale.metrics.annotation.Metered;
-import com.codahale.metrics.annotation.Timed;
-
+import io.dropwizard.metrics5.MetricName;
+import io.dropwizard.metrics5.MetricRegistry;
+import io.dropwizard.metrics5.annotation.CachedGauge;
+import io.dropwizard.metrics5.annotation.Counted;
+import io.dropwizard.metrics5.annotation.ExceptionMetered;
+import io.dropwizard.metrics5.annotation.Gauge;
+import io.dropwizard.metrics5.annotation.Metered;
+import io.dropwizard.metrics5.annotation.Timed;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Vetoed;
 import jakarta.inject.Inject;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Executable;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 
-import static io.astefanutti.metrics.cdi.MetricsParameter.UseAbsoluteName;;;
+import static io.astefanutti.metrics.cdi.MetricsParameter.UseAbsoluteName;
 
 @ApplicationScoped
 /* package-private */ class MetricResolver {
@@ -41,7 +42,7 @@ import static io.astefanutti.metrics.cdi.MetricsParameter.UseAbsoluteName;;;
     private MetricsExtension extension;
 
     @Inject
-    private MetricName metricName;
+    private MetricNameCdi metricNameCdi;
 
     Of<CachedGauge> cachedGauge(Class<?> topClass, Method method) {
         return resolverOf(topClass, method, CachedGauge.class);
@@ -76,14 +77,14 @@ import static io.astefanutti.metrics.cdi.MetricsParameter.UseAbsoluteName;;;
 
     private <T extends Annotation> Of<T> elementResolverOf(Executable executable, Class<T> metric) {
         T annotation = executable.getAnnotation(metric);
-        String name = metricName(executable, metric, metricName(annotation), isMetricAbsolute(annotation));
+        MetricName name = metricName(executable, metric, metricName(annotation), isMetricAbsolute(annotation));
         return new DoesHaveMetric<>(annotation, name);
     }
 
     private <T extends Annotation> Of<T> beanResolverOf(Executable executable, Class<T> metric, Class<?> bean) {
         if (bean.isAnnotationPresent(metric)) {
             T annotation = bean.getAnnotation(metric);
-            String name = metricName(bean, executable, metric, metricName(annotation), isMetricAbsolute(annotation));
+            MetricName name = metricName(bean, executable, metric, metricName(annotation), isMetricAbsolute(annotation));
             return new DoesHaveMetric<>(annotation, name);
         } else if (bean.getSuperclass() != null) {
         	return beanResolverOf(executable, metric, bean.getSuperclass());
@@ -92,19 +93,19 @@ import static io.astefanutti.metrics.cdi.MetricsParameter.UseAbsoluteName;;;
     }
 
     // TODO: should be grouped with the metric name strategy
-    private String metricName(Executable executable, Class<? extends Annotation> type, String name, boolean absolute) {
-        String metric = name.isEmpty() ? defaultName(executable, type) : metricName.of(name);
-        return absolute ? metric : MetricRegistry.name(executable.getDeclaringClass(), metric);
+    private MetricName metricName(Executable executable, Class<? extends Annotation> type, String name, boolean absolute) {
+        String metric = name.isEmpty() ? defaultName(executable, type) : metricNameCdi.of(name);
+        return absolute ? MetricName.build(metric) : MetricRegistry.name(executable.getDeclaringClass(), metric);
     }
 
-    private String metricName(Class<?> bean, Executable executable, Class<? extends Annotation> type, String name, boolean absolute) {
-        String metric = name.isEmpty() ? bean.getSimpleName() : metricName.of(name);
+    private MetricName metricName(Class<?> bean, Executable executable, Class<? extends Annotation> type, String name, boolean absolute) {
+        String metric = name.isEmpty() ? bean.getSimpleName() : metricNameCdi.of(name);
         return absolute ? MetricRegistry.name(metric, defaultName(executable, type)) : MetricRegistry.name(bean.getPackage().getName(), metric, defaultName(executable, type));
     }
 
     private String defaultName(Executable executable, Class<? extends Annotation> type) {
         if (ExceptionMetered.class.equals(type))
-            return MetricRegistry.name(memberName(executable), ExceptionMetered.DEFAULT_NAME_SUFFIX);
+            return MetricRegistry.name(memberName(executable), ExceptionMetered.DEFAULT_NAME_SUFFIX).getKey();
         else
             return memberName(executable);
     }
@@ -161,7 +162,7 @@ import static io.astefanutti.metrics.cdi.MetricsParameter.UseAbsoluteName;;;
 
         boolean isPresent();
 
-        String metricName();
+        MetricName metricName();
 
         T metricAnnotation();
     }
@@ -170,9 +171,9 @@ import static io.astefanutti.metrics.cdi.MetricsParameter.UseAbsoluteName;;;
 
         private final T annotation;
 
-        private final String name;
+        private final MetricName name;
 
-        private DoesHaveMetric(T annotation, String name) {
+        private DoesHaveMetric(T annotation, MetricName name) {
             this.annotation = annotation;
             this.name = name;
         }
@@ -183,7 +184,7 @@ import static io.astefanutti.metrics.cdi.MetricsParameter.UseAbsoluteName;;;
         }
 
         @Override
-        public String metricName() {
+        public MetricName metricName() {
             return name;
         }
 
@@ -205,7 +206,7 @@ import static io.astefanutti.metrics.cdi.MetricsParameter.UseAbsoluteName;;;
         }
 
         @Override
-        public String metricName() {
+        public MetricName metricName() {
             throw new UnsupportedOperationException();
         }
 

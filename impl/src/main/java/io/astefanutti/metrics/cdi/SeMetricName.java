@@ -15,21 +15,22 @@
  */
 package io.astefanutti.metrics.cdi;
 
-import com.codahale.metrics.MetricRegistry;
-import com.codahale.metrics.annotation.Metric;
-
+import io.dropwizard.metrics5.MetricName;
+import io.dropwizard.metrics5.MetricRegistry;
+import io.dropwizard.metrics5.annotation.Metric;
 import jakarta.enterprise.inject.Vetoed;
 import jakarta.enterprise.inject.spi.Annotated;
 import jakarta.enterprise.inject.spi.AnnotatedMember;
 import jakarta.enterprise.inject.spi.AnnotatedParameter;
 import jakarta.enterprise.inject.spi.InjectionPoint;
+
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 
 import static io.astefanutti.metrics.cdi.MetricsParameter.UseAbsoluteName;
 
 @Vetoed
-/* package-private */ class SeMetricName implements MetricName {
+/* package-private */ class SeMetricName implements MetricNameCdi {
 
     private final MetricsExtension extension;
 
@@ -38,7 +39,7 @@ import static io.astefanutti.metrics.cdi.MetricsParameter.UseAbsoluteName;
     }
 
     @Override
-    public String of(InjectionPoint ip) {
+    public MetricName of(InjectionPoint ip) {
         Annotated annotated = ip.getAnnotated();
         if (annotated instanceof AnnotatedMember)
             return of((AnnotatedMember<?>) annotated);
@@ -49,13 +50,13 @@ import static io.astefanutti.metrics.cdi.MetricsParameter.UseAbsoluteName;
     }
 
     @Override
-    public String of(AnnotatedMember<?> member) {
+    public MetricName of(AnnotatedMember<?> member) {
         if (member.isAnnotationPresent(Metric.class)) {
             Metric metric = member.getAnnotation(Metric.class);
             String name = metric.name().isEmpty() ? member.getJavaMember().getName() : of(metric.name());
-            return metric.absolute() | extension.<Boolean>getParameter(UseAbsoluteName).orElse(false) ? name : MetricRegistry.name(member.getJavaMember().getDeclaringClass(), name);
+            return metric.absolute() | extension.<Boolean>getParameter(UseAbsoluteName).orElse(false) ? MetricName.build(name) : MetricRegistry.name(member.getJavaMember().getDeclaringClass(), name);
         } else {
-            return extension.<Boolean>getParameter(UseAbsoluteName).orElse(false) ? member.getJavaMember().getName() : MetricRegistry.name(member.getJavaMember().getDeclaringClass(), member.getJavaMember().getName());
+            return extension.<Boolean>getParameter(UseAbsoluteName).orElse(false) ? MetricName.build(member.getJavaMember().getName()) : MetricRegistry.name(member.getJavaMember().getDeclaringClass(), member.getJavaMember().getName());
         }
     }
 
@@ -64,13 +65,13 @@ import static io.astefanutti.metrics.cdi.MetricsParameter.UseAbsoluteName;
         return attribute;
     }
 
-    private String of(AnnotatedParameter<?> parameter) {
+    private MetricName of(AnnotatedParameter<?> parameter) {
         if (parameter.isAnnotationPresent(Metric.class)) {
             Metric metric = parameter.getAnnotation(Metric.class);
             String name = metric.name().isEmpty() ? getParameterName(parameter) : of(metric.name());
-            return metric.absolute() | extension.<Boolean>getParameter(UseAbsoluteName).orElse(false) ? name : MetricRegistry.name(parameter.getDeclaringCallable().getJavaMember().getDeclaringClass(), name);
+            return metric.absolute() | extension.<Boolean>getParameter(UseAbsoluteName).orElse(false) ? MetricName.build(name) : MetricRegistry.name(parameter.getDeclaringCallable().getJavaMember().getDeclaringClass(), name);
         } else {
-            return extension.<Boolean>getParameter(UseAbsoluteName).orElse(false) ? getParameterName(parameter) : MetricRegistry.name(parameter.getDeclaringCallable().getJavaMember().getDeclaringClass(), getParameterName(parameter));
+            return extension.<Boolean>getParameter(UseAbsoluteName).orElse(false) ? MetricName.build(getParameterName(parameter)) : MetricRegistry.name(parameter.getDeclaringCallable().getJavaMember().getDeclaringClass(), getParameterName(parameter));
         }
     }
 
